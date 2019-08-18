@@ -132,11 +132,11 @@ db_from_env = dj_database_url.config()
 DATABASES['default'].update(db_from_env)
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-# try:
-#     from .local_settings import *
-# except ImportError:
-#     pass
-#
-# if not DEBUG:
-#     import django_heroku
-#     django_heroku.settings(locals())
+try:
+    from .local_settings import *
+except ImportError:
+    pass
+
+if not DEBUG:
+    import django_heroku
+    django_heroku.settings(locals())

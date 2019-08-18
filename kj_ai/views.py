@@ -59,3 +59,11 @@ class ResultView(TemplateView):
 
 class AboutPageView(TemplateView):
     template_name = 'kj_ai/about.html'
+
+
+class NewsPageView(TemplateView):
+    template_name = 'kj_ai/news.html'
+
+
+class LinkPageView(TemplateView):
+    template_name = 'kj_ai/link.html'

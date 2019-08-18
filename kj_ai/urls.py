@@ -6,8 +6,10 @@ from .views import *
 app_name = 'kj_ai'
 
 urlpatterns = [
-    path('input_url/', InputUrlView.as_view(), name='input_url'),
+    path('', InputUrlView.as_view(), name='input_url'),
     path('result/<str:song_id>/', ResultView.as_view(), name='result'),
     # path('success/', index, name='success'),
     path('about/', AboutPageView.as_view(), name='about'),
+    path('news/', NewsPageView.as_view(), name='news'),
+    path('link/', LinkPageView.as_view(), name='link'),
 ]
