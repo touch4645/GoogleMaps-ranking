@@ -33,13 +33,26 @@ class ResultView(TemplateView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         url = 'https://www.ufret.jp/song.php?data=' + kwargs['song_id']
+
+        # urlから曲のコードカウントしたdfと曲名を抽出
         df, song_name = scraping(url)
+
+        # 学習済みモデルとラベルエンコーダーの読み込み
         model_pkl_dir = os.path.join(BASE_DIR, 'static/model/model.pkl')
         le_pkl_dir = os.path.join(BASE_DIR, 'static/model/le.pkl')
         loaded_model = pickle.load(open(model_pkl_dir, 'rb'))
         le = pickle.load(open(le_pkl_dir, 'rb'))
-        pred_y = loaded_model.predict(df)
-        context['answer'] = pred_y
+
+        # 予測して、結果を文字列に変換
+        pred_y_value = loaded_model.predict(df)
+        pred_y_label = le.inverse_transform(pred_y_value)[0]
+        if pred_y_label.split('_')[-1] == 'Major':
+            answer = pred_y_label.split('_')[0]
+        else:
+            answer = pred_y_label.split('_')[0] + 'm'
+
+        # htmlに結果を渡す
+        context['answer'] = answer
         context['song_name'] = song_name
         return context
 

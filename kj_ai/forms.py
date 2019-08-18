@@ -4,7 +4,13 @@ from bs4 import BeautifulSoup
 import requests
 
 class InputUrlForm(forms.Form):
-    url_str = forms.CharField(max_length=255, required=True, label='URL')
+    def __init__(self, *args, **kwargs):
+        super(InputUrlForm, self).__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs["class"] = "form-control"
+
+    url_str = forms.CharField(max_length=60, required=True, label='URL')
+
 
     def clean_url_str(self):
         input_url = self.cleaned_data['url_str']

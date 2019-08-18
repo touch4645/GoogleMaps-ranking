@@ -3,5 +3,11 @@
 
 {% block content %}
     <h1 class="pb-2 mt-4 mb-2 border-bottom">Result</h1>
-    {{ song_name }}のキーは{{ answer }}です
+    <br>
+    <p>
+        {{ song_name }} のキーは <strong>{{ answer }}</strong> です
+    </p>
+    <p>
+        <a class="btn btn-outline-success" href="{% url 'kj_ai:input_url' %}" >戻る</a>
+    </p>
 {% endblock %}

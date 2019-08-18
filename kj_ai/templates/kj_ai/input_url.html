@@ -2,8 +2,12 @@
 {% block page_title %}キー判別{% endblock %}
 
 {% block content %}
-    <h1 class="pb-2 mt-4 mb-2 border-bottom">楽曲のキーを判別します</h1>
-    <h2>URLを入力してください</h2><br>
+    <h2 class="pb-2 mt-4 mb-2 border-bottom">キー判別AI</h2>
+    <h4>URLを入力してください</h4><br>
+    <p>
+        <a href="https://www.ufret.jp/">Ufret</a>に掲載されている楽曲のURLを記載してください。<br>
+    例：https://www.ufret.jp/song.php?data=192
+    </p>
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
