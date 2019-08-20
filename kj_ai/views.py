@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect, reverse
-from django.http import HttpResponse
-from django.views.generic import TemplateView, FormView, ListView, CreateView
+from django.views.generic import TemplateView, FormView
 from django.urls import reverse_lazy, reverse
 from .forms import *
 import os
@@ -10,21 +9,17 @@ from key_judge_app.settings import BASE_DIR
 import pickle
 from .my_function.scraping import func as scraping
 
-# UPLOAD_DIR = os.path.join(BASE_DIR, 'static/csv_files')
-
 
 class InputUrlView(FormView):
     template_name = 'kj_ai/input_url.html'
     form_class = InputUrlForm
-    # success_url = reverse_lazy('kj_ai:result')
 
     def form_valid(self, form):
         url = form.cleaned_data['url_str']
-        number = url.split('=')[-1]
-        return redirect('kj_ai:result',song_id=number)
-
-def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")
+        url_dir = os.path.join(BASE_DIR, 'static/model/input_data.txt')
+        with open(url_dir, 'w') as f:
+            f.write(url)
+        return redirect('kj_ai:result')
 
 
 class ResultView(TemplateView):
@@ -32,10 +27,15 @@ class ResultView(TemplateView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        url = 'https://www.ufret.jp/song.php?data=' + kwargs['song_id']
-
+        url_dir = os.path.join(BASE_DIR, 'static/model/input_data.txt')
+        with open(url_dir, 'r') as f:
+            url = f.read()
+        # url = 'https://www.ufret.jp/song.php?data=' + kwargs['song_id']
         # urlから曲のコードカウントしたdfと曲名を抽出
         df, song_name = scraping(url)
+
+        # urlを記載したファイルを削除
+        os.remove(url_dir)
 
         # 学習済みモデルとラベルエンコーダーの読み込み
         model_pkl_dir = os.path.join(BASE_DIR, 'static/model/model.pkl')
