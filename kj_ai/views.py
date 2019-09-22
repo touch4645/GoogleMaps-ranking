@@ -45,6 +45,8 @@ class ResultView(TemplateView):
 
         # 予測して、結果を文字列に変換
         pred_y_value = loaded_model.predict(df)
+        proba = loaded_model.predict_proba(df)
+
         pred_y_label = le.inverse_transform(pred_y_value)[0]
         if pred_y_label.split('_')[-1] == 'Major':
             answer = pred_y_label.split('_')[0]
