@@ -8,6 +8,9 @@ import numpy as np
 from key_judge_app.settings import BASE_DIR
 import pickle
 from .my_function.scraping import func as scraping
+from .my_function.sort_proba import func as get_ans
+import warnings
+warnings.filterwarnings('ignore')
 
 
 class InputUrlView(FormView):
@@ -30,7 +33,6 @@ class ResultView(TemplateView):
         url_dir = os.path.join(BASE_DIR, 'static/model/input_data.txt')
         with open(url_dir, 'r') as f:
             url = f.read()
-        # url = 'https://www.ufret.jp/song.php?data=' + kwargs['song_id']
         # urlから曲のコードカウントしたdfと曲名を抽出
         df, song_name = scraping(url)
 
@@ -44,18 +46,15 @@ class ResultView(TemplateView):
         le = pickle.load(open(le_pkl_dir, 'rb'))
 
         # 予測して、結果を文字列に変換
-        pred_y_value = loaded_model.predict(df)
         proba = loaded_model.predict_proba(df)
+        top5_df = get_ans(proba[0], le)
 
-        pred_y_label = le.inverse_transform(pred_y_value)[0]
-        if pred_y_label.split('_')[-1] == 'Major':
-            answer = pred_y_label.split('_')[0]
-        else:
-            answer = pred_y_label.split('_')[0] + 'm'
+        answer = top5_df.iloc[0, 1]
 
         # htmlに結果を渡す
         context['answer'] = answer
         context['song_name'] = song_name
+        context['top5_df'] = top5_df
         return context
 
 

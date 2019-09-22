@@ -3,6 +3,7 @@ import re
 from bs4 import BeautifulSoup
 import requests
 
+
 class InputUrlForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(InputUrlForm, self).__init__(*args, **kwargs)
