@@ -5,17 +5,19 @@
     <h1 class="pb-2 mt-4 mb-2 border-bottom">Result</h1>
     <br>
     <p>
-        {{ song_name }} のキーは <strong>{{ answer }}</strong> です
+        {{ context.song_name }} のキーは <strong>{{ context.answer }}</strong> です
     </p>
     <br>
     <table class="table">
         <thead class="thead-dark">
             <tr><th>キー</th><th>確率(%)</th></tr>
         </thead>
+        {% for i, r in context.top5_df.iterrows() %}
         <tr>
-            <td></td>
-            <td></td>
+            <td>{{ r.key }}</td>
+            <td>{{ '%0.2f' % r.proba|float }}</td>
         </tr>
+        {% endfor %}
     </table>
     <p class="small">
         ※予測結果のうち、上位5つを表示しています。

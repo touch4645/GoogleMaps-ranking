@@ -5,7 +5,7 @@ selenium
 pandas
 numpy
 sklearn
-xgboost
+xgboost==0.90
 
 flask
 gunicorn
