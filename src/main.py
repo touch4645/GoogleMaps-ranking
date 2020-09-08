@@ -5,8 +5,20 @@ from selenium import webdriver
 from selenium.webdriver.support.select import Select
 app = Flask(__name__)
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+@app.route('/news')
+def news():
+    return render_template('news.html')
+
+@app.route('/link')
+def link():
+    return render_template('link.html')
+
 @app.route('/')
-def hello():
+def top():
     # options
     # chrome_options = webdriver.ChromeOptions()
     # chrome_options.add_argument('--no-sandbox')
