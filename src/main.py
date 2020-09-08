@@ -1,56 +1,38 @@
 from flask import Flask, render_template, Markup, request, jsonify, json
 from bs4 import BeautifulSoup
 import requests
+from selenium import webdriver
+from selenium.webdriver.support.select import Select
 app = Flask(__name__)
 
 @app.route('/')
 def hello():
-    return render_template('top.html')
+    # options
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('--headless')
+    chrome_options.add_argument('--disable-gpu')
+    # launch driver
+    driver = webdriver.Chrome(chrome_options=chrome_options)
+    # set wait time
+    driver.implicitly_wait(60)
 
-@app.route('/convert')
-def note():
-    return render_template('convert.html')
+    song_url = 'https://www.ufret.jp/song.php?data=1194'
+    driver.get(song_url)
+    # 原曲キーに戻る
+    select_element = driver.find_element_by_name('keyselect')
+    select_obj = Select(select_element)
+    select_obj.select_by_value('0')
+    html = driver.page_source
+    driver.quit()
+    # scraping
+    soup = BeautifulSoup(html, 'html.parser')
+    chord_tags = soup.find_all('rt')
+    ans = []
+    for tag in chord_tags:
+        ans.append(tag.text)
+    return ' '.join(ans)
 
-
-def scraping_utanet(soup):
-    kashi_area_str = str(soup.find('div', id='kashi_area'))
-    kashi = kashi_area_str.replace('<div id="kashi_area" itemprop="text">', '')
-    kashi = kashi.replace('</div>', '')
-    return kashi
-
-
-def scraping_jlyric(soup):
-    kashi_area_str = str(soup.find('p', id='Lyric'))
-    kashi = kashi_area_str.replace('<p id="Lyric">', '')
-    kashi = kashi.replace('</p>', '')
-    return kashi
-
-
-def scraping_utamap(soup):
-    kashi_area_str = str(soup.find('td', class_='noprint kasi_honbun'))
-    kashi = kashi_area_str.replace('<td class="noprint kasi_honbun" style="padding-left:30px;">', '')
-    kashi = kashi.replace('<!-- 歌詞 end -->', '')
-    kashi = kashi.replace('</td>', '')
-    return kashi
-
-
-@app.route('/result', methods=['POST'])
-def scraping():
-    url = request.form['url']
-    res = requests.get(url)
-    soup = BeautifulSoup(res.content, 'html.parser')
-
-    if 'uta-net' in url:
-        kashi = scraping_utanet(soup)
-    elif 'j-lyric' in url:
-        kashi = scraping_jlyric(soup)
-    elif 'utamap' in url:
-        kashi = scraping_utamap(soup)
-    # 改行タグを改行に変換
-    kashi = kashi.replace('<br>', '\n')
-    kashi = kashi.replace('</br>', '\n')
-    kashi = kashi.replace('<br/>', '\n')
-    return jsonify({'output': kashi})
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8080, debug=True)
