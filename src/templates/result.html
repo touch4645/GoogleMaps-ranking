@@ -12,18 +12,16 @@
         <thead class="thead-dark">
             <tr><th>キー</th><th>確率(%)</th></tr>
         </thead>
-        {% for i, r in top5_df.iterrows %}
         <tr>
-            <td>{{ r.key }}</td>
-            <td>{{ r.proba|floatformat:2 }}</td>
+            <td></td>
+            <td></td>
         </tr>
-        {% endfor %}
     </table>
     <p class="small">
         ※予測結果のうち、上位5つを表示しています。
     </p>
 
     <p>
-        <a class="btn btn-outline-success" href="{% url 'kj_ai:input_url' %}" >戻る</a>
+        <a class="btn btn-outline-success" href="/" >戻る</a>
     </p>
 {% endblock %}
