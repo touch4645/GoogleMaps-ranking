@@ -82,8 +82,8 @@ def sort_proba(proba, le):
 
 def predict(df):
     # 学習済みモデルとラベルエンコーダーの読み込み
-    model_pkl_dir = 'static/model/model.pkl'
-    le_pkl_dir = 'static/model/le.pkl'
+    model_pkl_dir = 'src/static/model/model.pkl'
+    le_pkl_dir = 'src/static/model/le.pkl'
     loaded_model = pickle.load(open(model_pkl_dir, 'rb'))
     le = pickle.load(open(le_pkl_dir, 'rb'))
 

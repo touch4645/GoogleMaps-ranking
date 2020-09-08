@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request
-from modules.module import judge_key
-app = Flask(__name__)
+from src.modules.module import judge_key
+import os
+template_dir = os.path.abspath('src/templates')
+app = Flask(__name__, template_folder=template_dir)
 
 @app.route('/about')
 def about():

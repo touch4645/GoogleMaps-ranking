@@ -18,12 +18,12 @@ RUN apt-get update && apt-get install -y \
 	&& pip install --upgrade pip
 
 # change dir
-WORKDIR /home/src
+WORKDIR /home/KJA_APP
 
 # install module
 COPY requirements.txt /home
 RUN pip install -r /home/requirements.txt
 
 # setting
-ENV FLASK_APP '/home/src/main.py'
+ENV FLASK_APP '/home/KJA_APP/main.py'
 ENV FLASK_DEBUG 1

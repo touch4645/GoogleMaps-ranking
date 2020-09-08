@@ -6,7 +6,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./src:/home/src
+      - .:/home/KJA_APP
     tty: true
     environment:
       TZ: Asia/Tokyo
