@@ -1,8 +1,4 @@
-from flask import Flask, render_template, Markup, request, jsonify, json
-from bs4 import BeautifulSoup
-import requests
-from selenium import webdriver
-from selenium.webdriver.support.select import Select
+from flask import Flask, render_template, request
 from modules.module import judge_key
 app = Flask(__name__)
 
