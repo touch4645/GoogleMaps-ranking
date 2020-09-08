@@ -25,5 +25,5 @@ COPY requirements.txt /home
 RUN pip install -r /home/requirements.txt
 
 # setting
-ENV FLASK_APP '/home/KJA_APP/main.py'
+ENV FLASK_APP '/home/KJA_APP/app.py'
 ENV FLASK_DEBUG 1
