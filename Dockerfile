@@ -10,6 +10,9 @@ RUN apt-get -y update && apt-get install -y google-chrome-stable && apt-get inst
 RUN wget -O /tmp/chromedriver.zip http://chromedriver.storage.googleapis.com/`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE`/chromedriver_linux64.zip
 RUN unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/
 
+# install heroku cli
+RUN curl https://cli-assets.heroku.com/install.sh | sh
+
 # set display port to avoid crash
 ENV DISPLAY=:99
 
@@ -24,6 +27,6 @@ WORKDIR /home/KJA_APP
 COPY requirements.txt /home
 RUN pip install -r /home/requirements.txt
 
-# setting
+# flask setting
 ENV FLASK_APP '/home/KJA_APP/app.py'
 ENV FLASK_DEBUG 1
