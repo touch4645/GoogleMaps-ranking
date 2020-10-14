@@ -11,12 +11,9 @@ import requests
 # 初期化
 from itertools import zip_longest
 from itertools import filterfalse
-import matplotlib as mpl
-import pandas_datareader as pd
-import tkinter as tk
 
 
-def get_keyword_relation(keyword='プログラミング'):
+def get_keyword_relation(keyword='名古屋 ディナー'):
     # キーワードリスト
     kw_list = [keyword]
 
@@ -30,17 +27,19 @@ def get_keyword_relation(keyword='プログラミング'):
     timeframe='today 5-y' -> 過去5年間（5-yしか指定できない）
     """
     pytrends = TrendReq(hl='ja-JP', tz=360)
-    pytrends.build_payload(kw_list, cat=0, timeframe='today 5-y', geo='JP', gprop='')
+    pytrends.build_payload(kw_list, cat=0, timeframe='today 12-m', geo='JP', gprop='')
     trends = pytrends.related_queries()
     trends_values = trends[keyword]['top'].values.tolist()
 
-    for value in trends_values:
-        item = str(value[0]).strip(KEYWORD)
-        item = item.replace('　', '')
-        item = item.replace(' ', '')
-        google_trend_list.append(item)
+    return trends_values
 
-    print('google_trend_list = ' + str(google_trend_list))
+    # for value in trends_values:
+    #     item = str(value[0]).strip(keyword)
+    #     item = item.replace('　', '')
+    #     item = item.replace(' ', '')
+    #     google_trend_list.append(item)
+    #
+    # print('google_trend_list = ' + str(google_trend_list))
 
 
 def get_lat_lon_from_address(address):
@@ -161,6 +160,6 @@ def searchTrends():
     #keyword_list = ['Mezzanine','postgresql','React','JavaScript','Python']
     merged_df[kw_list].plot(logy=True, figsize=(15, 6))
 
-if if __name__ == "__main__":
+if __name__ == "__main__":
     print(get_keyword_relation())
     pass
