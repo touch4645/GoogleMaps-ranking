@@ -100,15 +100,20 @@ def get_local_ranking(keys):
     details = soup.find_all(class_="section-result-details")
     addresses = soup.find_all(class_="section-result-location")
 
-    for title, rate, review, detail, address in zip(titles, rates, reviews, details, addresses):
-        print("-------------------------------")
-        print(title.text.strip())
-        print('評価: ', rate.text.strip())
-        print('口コミ: ', review.text.strip())
-        print(detail.text.strip())
-        print(address.text.strip())
-        print("-------------------------------")
+    n = 1
+    result = {}
 
+    for title, rate, review, detail, address in zip(titles, rates, reviews, details, addresses):
+        local = {}
+        local["title"] = title.text.strip()
+        local['rate'] = rate.text.strip()
+        local['rebiew'] = review.text.strip()
+        local['detail'] = detail.text.strip()
+        local['address'] = address.text.strip()
+        result[n] = local
+        n += 1
+
+    return result
     driver.close()
 
 

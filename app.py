@@ -1,30 +1,27 @@
-from flask import Flask, render_template, request
-from src.modules.module import judge_key
-import os
-template_dir = os.path.abspath('src/templates')
-app = Flask(__name__, template_folder=template_dir)
+from flask import Flask
+from flask import request
+from flask import jsonify
 
-@app.route('/about')
-def about():
-    return render_template('about.html')
+from src.modules.functions import get_local_ranking
 
-@app.route('/news')
-def news():
-    return render_template('news.html')
+app = Flask(__name__)
 
-@app.route('/link')
-def link():
-    return render_template('link.html')
-
-
-@app.route('/', methods=['GET', 'POST'])
-def top():
-    if request.method == 'GET':
-        return render_template('top.html')
+@app.route('/ranking', methods=['POST'])
+def get_ranking():
     if request.method == 'POST':
-        url = request.form['url']
-        context = judge_key(url)
-        return render_template('result.html', context=context)
+        request_json = request.json
+        required = (
+            'keys')
+        if not all(k in request_json for k in required):
+            return jsonify({'message': 'missing values'}), 400
+
+        is_ranked = get_local_ranking(
+            request_json['keys']
+        )
+
+        if not is_ranked:
+            return jsonify({'message': 'fail'}), 400
+        return jsonify({'message': 'success', 'result': is_ranked}), 201
 
 
 if __name__ == '__main__':
