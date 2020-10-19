@@ -23,11 +23,11 @@ from google.ads.google_ads.errors import GoogleAdsException
 # Location IDs are listed here: https://developers.google.com/adwords/api/docs/appendix/geotargeting
 # and they can also be retrieved using the GeoTargetConstantService as shown
 # here: https://developers.google.com/google-ads/api/docs/targeting/location-targeting
-_DEFAULT_LOCATION_IDS = ["1023191"]  # location ID for New York, NY
+_DEFAULT_LOCATION_IDS = ["2392"]  # location ID for Japan
 # A language criterion ID. For example, specify 1000 for English. For more
 # information on determining this value, see the below link:
 # https://developers.google.com/adwords/api/docs/appendix/codes-formats#languages.
-_DEFAULT_LANGUAGE_ID = "1000"  # language ID for English
+_DEFAULT_LANGUAGE_ID = "1005"  # language ID for Japanese
 
 
 def main(
@@ -93,17 +93,16 @@ def main(
             keyword_seed=keyword_seed,
             keyword_and_url_seed=keyword_url_seed,
         )
+        result = {}
 
         for idea in keyword_ideas:
             competition_value = keyword_competition_level_enum.Name(
                 idea.keyword_idea_metrics.competition
             )
-            print(
-                f'Keyword idea text "{idea.text.value}" has '
-                f'"{idea.keyword_idea_metrics.avg_monthly_searches.value}" '
-                f'average monthly searches and "{competition_value}" '
-                "competition.\n"
-            )
+            result[idea.text.value] = {"volume": idea.keyword_idea_metrics.avg_monthly_searches.value,
+                                        "competition": competition_value}
+        return result
+
     except GoogleAdsException as ex:
         print(
             f'Request with ID "{ex.request_id}" failed with status '
@@ -115,6 +114,7 @@ def main(
                 for field_path_element in error.location.field_path_elements:
                     print(f"\t\tOn field: {field_path_element.field_name}")
         sys.exit(1)
+        return False
 
 
 def map_keywords_to_string_values(client, keyword_texts):
@@ -144,11 +144,16 @@ def map_language_to_string_value(client, language_id):
     return language
 
 
-if __name__ == "__main__":
+def get_keywords_data(
+        customer_id, location_ids, language_id, keyword_texts, page_url
+):
     # GoogleAdsClient will read the google-ads.yaml configuration file in the
     # home directory if none is specified.
     google_ads_client = GoogleAdsClient.load_from_storage()
+    return main(google_ads_client, customer_id, location_ids, language_id, keyword_texts, page_url)
 
+
+if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Generates keyword ideas from a list of seed keywords."
     )
@@ -202,8 +207,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    main(
-        google_ads_client,
+    get_keywords_data(
         args.customer_id,
         args.location_ids,
         args.language_id,

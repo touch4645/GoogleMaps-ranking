@@ -7,6 +7,7 @@ from selenium import webdriver  # Webブラウザを自動操作する（python 
 from selenium.webdriver.chrome.options import Options  # オプションを使うために必要
 
 import requests
+import time
 
 # 初期化
 from itertools import zip_longest
@@ -64,14 +65,14 @@ def get_lat_lon_from_address(address):
     return latlons
 
 
-def get_local_ranking(keys):
+def get_local_ranking(keys, address):
     option = Options()  # オプションを用意
     option.add_argument('--headless')  # ヘッドレスモードの設定を付与
 
-    lat = get_lat_lon_from_address()
+    lat = get_lat_lon_from_address(address)
 
     #Google Chromeのドライバを用意
-    driver = webdriver.Chrome(options=option)  # Chromeを準備(optionでヘッドレスモードにしている）
+    driver = webdriver.Chrome(executable_path='/Users/terazawakoki/.pyenv/versions/anaconda3-5.0.0/lib/python3.6/site-packages/chromedriver_binary/chromedriver', options=option)  # Chromeを準備(optionでヘッドレスモードにしている）
 
     #Google mapsを開く
     url = 'https://www.google.co.jp/maps/@' + lat[0][0] + ','+ lat[0][1] +',14z'
@@ -107,7 +108,7 @@ def get_local_ranking(keys):
         local = {}
         local["title"] = title.text.strip()
         local['rate'] = rate.text.strip()
-        local['rebiew'] = review.text.strip()
+        local['review'] = review.text.strip()
         local['detail'] = detail.text.strip()
         local['address'] = address.text.strip()
         result[n] = local
@@ -166,5 +167,5 @@ def searchTrends():
     merged_df[kw_list].plot(logy=True, figsize=(15, 6))
 
 if __name__ == "__main__":
-    print(get_keyword_relation())
+    print(get_local_ranking('名古屋　居酒屋', '名古屋市'))
     pass
