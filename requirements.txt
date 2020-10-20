@@ -14,15 +14,9 @@ pandas==1.1.1
 python-dateutil==2.8.1
 pytz==2020.1
 requests==2.24.0
-scikit-learn==0.23.2
 scipy==1.5.2
 selenium==3.141.0
-six==1.15.0
-sklearn==0.0
 soupsieve==2.0.1
-threadpoolctl==2.1.0
 urllib3==1.25.10
-Werkzeug==1.0.1
-xgboost==0.90
 pytrends==4.7.2
 google==3.0.0
