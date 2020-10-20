@@ -25,3 +25,4 @@ urllib3==1.25.10
 Werkzeug==1.0.1
 xgboost==0.90
 pytrends==4.7.2
+google==3.0.0

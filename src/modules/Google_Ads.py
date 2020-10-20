@@ -39,6 +39,9 @@ def main(
     keyword_competition_level_enum = client.get_type(
         "KeywordPlanCompetitionLevelEnum", version="v5"
     ).KeywordPlanCompetitionLevel
+    month_of_year_enum = client.get_type(
+        "MonthOfYearEnum", version="v5"
+    ).MonthOfYear
     keyword_plan_network = client.get_type(
         "KeywordPlanNetworkEnum", version="v5"
     ).GOOGLE_SEARCH_AND_PARTNERS
@@ -99,8 +102,23 @@ def main(
             competition_value = keyword_competition_level_enum.Name(
                 idea.keyword_idea_metrics.competition
             )
-            result[idea.text.value] = {"volume": idea.keyword_idea_metrics.avg_monthly_searches.value,
-                                        "competition": competition_value}
+
+            monthly_search_volumes = {}
+            search_volumes = idea.keyword_idea_metrics.monthly_search_volumes
+            for index in range(12):
+                monthly_search_volumes[month_of_year_enum.Name(search_volumes[index].month)] = {
+                    "year": search_volumes[index].year.value,
+                    "value": search_volumes[index].monthly_searches.value
+                }
+
+            result[idea.text.value] = {
+                "avg_monthly_searches_volume": idea.keyword_idea_metrics.avg_monthly_searches.value,
+                "monthly_search_volumes": monthly_search_volumes,
+                "competition": {
+                    "level": competition_value,
+                    "value": idea.keyword_idea_metrics.competition_index.value
+                }
+            }
         return result
 
     except GoogleAdsException as ex:
