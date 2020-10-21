@@ -8,6 +8,10 @@ from src.modules.Google_Ads import get_keywords_data
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
 
+@app.route('/')
+def index():
+    return 'Hello World!'
+
 @app.route('/ranking', methods=['POST'])
 def get_ranking():
     if request.method == 'POST':
@@ -51,7 +55,7 @@ def get_volume():
         if 'keys' in request_json:
             keyword.append(request_json['keys'])
 
-        if 'page' in request_json:
+        if 'page_url' in request_json:
             page_url = request_json['page_url']
         else:
             page_url = ''
