@@ -66,13 +66,15 @@ def get_lat_lon_from_address(address):
 
 
 def get_local_ranking(keys, address):
-    option = Options()  # オプションを用意
-    option.add_argument('--headless')  # ヘッドレスモードの設定を付与
+    # options
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('--headless')
+    chrome_options.add_argument('--disable-gpu')
+    # launch driver
+    driver = webdriver.Chrome(chrome_options=chrome_options)
 
     lat = get_lat_lon_from_address(address)
-
-    #Google Chromeのドライバを用意
-    driver = webdriver.Chrome(executable_path='/Users/terazawakoki/.pyenv/versions/anaconda3-5.0.0/lib/python3.6/site-packages/chromedriver_binary/chromedriver', options=option)  # Chromeを準備(optionでヘッドレスモードにしている）
 
     #Google mapsを開く
     url = 'https://www.google.co.jp/maps/@' + lat[0][0] + ','+ lat[0][1] +',14z'
