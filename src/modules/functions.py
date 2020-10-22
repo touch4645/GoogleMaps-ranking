@@ -75,7 +75,6 @@ def get_local_ranking(keys, address):
     chrome_options.add_argument('--remote-debugging-port=9222')
     # launch driver
     driver = webdriver.Chrome(chrome_options=chrome_options)
-    driver.set_window_size(950, 800)
 
     lat = get_lat_lon_from_address(address)
 
