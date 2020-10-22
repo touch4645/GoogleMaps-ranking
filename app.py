@@ -5,8 +5,19 @@ from flask import jsonify
 from src.modules.functions import get_local_ranking
 from src.modules.Google_Ads import get_keywords_data
 
+import logging
+import sys
+
+
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
+
+
+# ログを標準出力に出力する
+app.logger.addHandler(logging.StreamHandler(sys.stdout))
+# （レベル設定は適宜行ってください）
+app.logger.setLevel(logging.ERROR)
+
 
 @app.route('/')
 def index():
@@ -19,6 +30,7 @@ def get_ranking():
         required = (
             'keys', 'address')
         if not all(k in request_json for k in required):
+            app.logger.info(jsonify({'message': 'missing values'}))
             return jsonify({'message': 'missing values'}), 400
 
         is_ranked = get_local_ranking(
@@ -26,7 +38,9 @@ def get_ranking():
         )
 
         if not is_ranked:
+            app.logger.info(jsonify({'message': 'fail'}))
             return jsonify({'message': 'fail'}), 400
+        app.logger.info(jsonify({'message': 'success', 'result': is_ranked}))
         return jsonify({'message': 'success', 'result': is_ranked}), 201
 
 
@@ -45,6 +59,7 @@ def get_volume():
         required = (
             'keys', 'page_url')
         if not any(k in request_json for k in required):
+            app.logger.info(jsonify({'message': 'missing values'}))
             return jsonify({'message': 'missing values'}), 400
 
         customer_id = DEFAULT_CUSTOMER_ID
@@ -65,7 +80,9 @@ def get_volume():
         )
 
         if not is_volumed:
+            app.logger.info(jsonify({'message': 'fail'}))
             return jsonify({'message': 'fail'}), 400
+        app.logger.info(jsonify({'message': 'success', 'result': is_volumed}))
         return jsonify({'message': 'success', 'result': is_volumed}), 201
 
 
