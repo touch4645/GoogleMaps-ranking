@@ -47,6 +47,7 @@ def main(
     ).GOOGLE_SEARCH_AND_PARTNERS
     locations = map_locations_to_string_values(client, location_ids)
     language = map_language_to_string_value(client, language_id)
+    page_size = 100
 
     # Only one of these values will be passed to the KeywordPlanIdeaService
     # depending on whether keywords, a page_url or both were given.
@@ -92,6 +93,7 @@ def main(
             locations,
             False,
             keyword_plan_network,
+            page_size,
             url_seed=url_seed,
             keyword_seed=keyword_seed,
             keyword_and_url_seed=keyword_url_seed,
@@ -106,9 +108,13 @@ def main(
             monthly_search_volumes = {}
             search_volumes = idea.keyword_idea_metrics.monthly_search_volumes
             for index in range(12):
-                monthly_search_volumes[month_of_year_enum.Name(search_volumes[index].month)] = {
-                    "year": search_volumes[index].year.value,
-                    "value": search_volumes[index].monthly_searches.value
+                month = month_of_year_enum.Name(search_volumes[index].month)
+                year = search_volumes[index].year.value
+                value = search_volumes[index].monthly_searches.value
+
+                year_to_month = month_to_integer_values(month, year)
+                monthly_search_volumes[year_to_month] = {
+                    "value": value
                 }
 
             result[idea.text.value] = {
@@ -133,6 +139,24 @@ def main(
                     print(f"\t\tOn field: {field_path_element.field_name}")
         sys.exit(1)
         return False
+
+
+def month_to_integer_values(month, year):
+    month_to_int = {
+        "JANUARY": "/1",
+        "FEBRUARY": "/2",
+        "MARCH": "/3",
+        "APRIL": "/4",
+        "MAY": "/5",
+        "JUNE": "/6",
+        "JULY": "/7",
+        "AUGUST": "/8",
+        "SEPTEMBER": "/9",
+        "OCTOBER": "/10",
+        "NOVEMBER": "/11",
+        "DECEMBER": "/12"
+    }
+    return str(year) + month_to_int[month]
 
 
 def map_keywords_to_string_values(client, keyword_texts):
@@ -167,7 +191,8 @@ def get_keywords_data(
 ):
     # GoogleAdsClient will read the google-ads.yaml configuration file in the
     # home directory if none is specified.
-    google_ads_client = GoogleAdsClient.load_from_storage('/app/google-ads.yaml')
+    # google_ads_client = GoogleAdsClient.load_from_storage('/app/google-ads.yaml')
+    google_ads_client = GoogleAdsClient.load_from_storage('/home/KJA_APP/google-ads.yaml')
     return main(google_ads_client, customer_id, location_ids, language_id, keyword_texts, page_url)
 
 
