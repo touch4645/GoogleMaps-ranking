@@ -16,7 +16,7 @@ app.config['JSON_AS_ASCII'] = False
 # ログを標準出力に出力する
 app.logger.addHandler(logging.StreamHandler(sys.stdout))
 # （レベル設定は適宜行ってください）
-app.logger.setLevel(logging.ERROR)
+app.logger.setLevel(logging.INFO)
 
 
 @app.route('/')
@@ -66,9 +66,10 @@ def get_volume():
         language_id = DEFAULT_LANGUAGE_ID
         location_id = DEFAULT_LOCATION_ID
 
-        keyword = []
         if 'keys' in request_json:
-            keyword.append(request_json['keys'])
+            keyword = request_json['keys']
+        else:
+            keyword = ''
 
         if 'page_url' in request_json:
             page_url = request_json['page_url']
@@ -84,6 +85,25 @@ def get_volume():
             return jsonify({'message': 'fail'}), 400
         app.logger.info(jsonify({'message': 'success', 'result': is_volumed}))
         return jsonify({'message': 'success', 'result': is_volumed}), 201
+
+
+@app.route('/relation', methods=['POST'])
+def get_relational_keywords():
+    if request.method == 'POST':
+        request_json = request.json
+        required = (
+            'keys')
+        if not any(k in request_json for k in required):
+            app.logger.info(jsonify({'message': 'missing values'}))
+            return jsonify({'message': 'missing values'}), 400
+
+        is_related = get_keyword_relation(request_json['keys'])
+
+        if not is_related:
+            app.logger.info(jsonify({'message': 'fail'}))
+            return jsonify({'message': 'fail'}), 400
+        app.logger.info(jsonify({'message': 'success', 'result': is_related}))
+        return jsonify({'message': 'success', 'result': is_related}), 201
 
 
 if __name__ == '__main__':

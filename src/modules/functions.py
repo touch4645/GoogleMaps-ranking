@@ -14,13 +14,7 @@ from itertools import zip_longest
 from itertools import filterfalse
 
 
-def get_keyword_relation(keyword='名古屋 ディナー'):
-    # キーワードリスト
-    kw_list = [keyword]
-
-    # GoogleTrandsのリスト
-    google_trend_list = []
-
+def get_keyword_relation(kw_list=['名古屋 ディナー','名古屋市 ランチ']):
     """
     期間の指定例：
     timeframe='now 1-d' -> 過去1日間（あるいは7-dで指定）
@@ -30,9 +24,12 @@ def get_keyword_relation(keyword='名古屋 ディナー'):
     pytrends = TrendReq(hl='ja-JP', tz=360)
     pytrends.build_payload(kw_list, cat=0, timeframe='today 12-m', geo='JP', gprop='')
     trends = pytrends.related_queries()
-    trends_values = trends[keyword]['top'].values.tolist()
+    result = {}
+    for keyword in kw_list:
+        trends_values = trends[keyword]['top'].values.tolist()
+        result[keyword] = trends_values
 
-    return trends_values
+    return result
 
     # for value in trends_values:
     #     item = str(value[0]).strip(keyword)
@@ -171,5 +168,5 @@ def searchTrends():
     merged_df[kw_list].plot(logy=True, figsize=(15, 6))
 
 if __name__ == "__main__":
-    print(get_local_ranking('名古屋　居酒屋', '名古屋市'))
+    print(get_keyword_relation())
     pass

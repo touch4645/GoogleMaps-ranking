@@ -191,6 +191,7 @@ def get_keywords_data(
 ):
     # GoogleAdsClient will read the google-ads.yaml configuration file in the
     # home directory if none is specified.
+
     # Heroku env
     google_ads_client = GoogleAdsClient.load_from_storage('/app/google-ads.yaml')
     # local Docker env
