@@ -4,6 +4,7 @@ from flask import jsonify
 
 from src.modules.functions import get_local_ranking
 from src.modules.Google_Ads import get_keywords_data
+from src.modules.functions import get_keyword_relation
 
 import logging
 import sys
