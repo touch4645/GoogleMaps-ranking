@@ -14,7 +14,7 @@ from itertools import zip_longest
 from itertools import filterfalse
 
 
-def get_keyword_relation(kw_list=['名古屋 ディナー','名古屋市 ランチ']):
+def get_keyword_relation(keys=['名古屋市 ランチ']):
     """
     期間の指定例：
     timeframe='now 1-d' -> 過去1日間（あるいは7-dで指定）
@@ -22,22 +22,22 @@ def get_keyword_relation(kw_list=['名古屋 ディナー','名古屋市 ラン�
     timeframe='today 5-y' -> 過去5年間（5-yしか指定できない）
     """
     pytrends = TrendReq(hl='ja-JP', tz=360)
-    pytrends.build_payload(kw_list, cat=0, timeframe='today 12-m', geo='JP', gprop='')
+    pytrends.build_payload(keys, cat=0, timeframe='today 12-m', geo='JP', gprop='')
     trends = pytrends.related_queries()
     result = {}
-    for keyword in kw_list:
+    for keyword in keys:
         trends_values = trends[keyword]['top'].values.tolist()
-        result[keyword] = trends_values
+        trends_object = change_to_object(trends_values)
+        result[keyword] = trends_object
 
     return result
 
-    # for value in trends_values:
-    #     item = str(value[0]).strip(keyword)
-    #     item = item.replace('　', '')
-    #     item = item.replace(' ', '')
-    #     google_trend_list.append(item)
-    #
-    # print('google_trend_list = ' + str(google_trend_list))
+
+def change_to_object(trends_values):
+    result = {}
+    for kw_list in trends_values:
+        result[kw_list[0]] = kw_list[1]
+    return result
 
 
 def get_lat_lon_from_address(address):

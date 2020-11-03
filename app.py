@@ -92,9 +92,8 @@ def get_volume():
 def get_relational_keywords():
     if request.method == 'POST':
         request_json = request.json
-        required = (
-            'keys')
-        if not any(k in request_json for k in required):
+
+        if not 'keys' in request_json:
             app.logger.info(jsonify({'message': 'missing values'}))
             return jsonify({'message': 'missing values'}), 400
 
